@@ -77,3 +77,4 @@ function touchEnd(e) {
         currentImg = null;
     }
 }
+console.log('스크립트가 제대로 로드되었습니다!');
