@@ -31,4 +31,7 @@ body {
     height: 50px;
     position: absolute;
 }
+body {
+    background-color: yellow;
+}
 
