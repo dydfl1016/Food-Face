@@ -64,5 +64,33 @@ function touchStart(e) {
         faceArea.appendChild(img);
     });
 }
+// 기존 드래그 앤 드롭 코드
+
+// 터치 이벤트 관련 코드 추가
+foodItems.forEach(item => {
+    item.addEventListener('touchstart', touchStart);
+});
+
+function touchStart(e) {
+    const touch = e.touches[0];
+    const imgSrc = e.target.src;
+
+    const img = document.createElement('img');
+    img.src = imgSrc;
+    img.style.width = '50px';
+    img.style.height = '50px';
+    img.style.position = 'absolute';
+
+    document.body.appendChild(img);
+
+    document.addEventListener('touchmove', function (moveEvent) {
+        img.style.left = `${moveEvent.touches[0].pageX - 25}px`;
+        img.style.top = `${moveEvent.touches[0].pageY - 25}px`;
+    });
+
+    document.addEventListener('touchend', function () {
+        faceArea.appendChild(img);
+    });
+}
 
 }
