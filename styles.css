@@ -31,3 +31,22 @@ body {
     height: 50px;
     position: absolute;
 }
+/* 기본 스타일 */
+#face-area {
+    width: 300px;
+    margin: 20px auto;
+}
+
+.food {
+    width: 50px;
+}
+
+/* 모바일에 대응하는 반응형 스타일 */
+@media (max-width: 600px) {
+    #face-area {
+        width: 200px; /* 화면이 작은 경우 더 작은 접시 */
+    }
+    .food {
+        width: 40px; /* 모바일에서 음식 크기를 작게 조정 */
+    }
+}
