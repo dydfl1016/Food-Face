@@ -1,0 +1,27 @@
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+#face-area {
+    position: relative;
+    width: 300px;
+    margin: 20px auto;
+}
+
+#face-outline {
+    width: 100%;
+}
+
+#food-items {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.food {
+    width: 50px;
+    cursor: pointer;
+}
