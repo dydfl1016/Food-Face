@@ -1,15 +1,21 @@
 const faceArea = document.getElementById('face-area');
-
-// 음식 재료를 드래그 앤 드롭할 수 있도록 구현
 const foodItems = document.querySelectorAll('.food');
 
+// 터치 및 드래그 앤 드롭 이벤트 모두 처리
 foodItems.forEach(item => {
     item.addEventListener('dragstart', dragStart);
+    item.addEventListener('touchstart', touchStart);
 });
 
 faceArea.addEventListener('dragover', dragOver);
 faceArea.addEventListener('drop', drop);
 
+faceArea.addEventListener('touchmove', touchMove);
+faceArea.addEventListener('touchend', touchEnd);
+
+let currentImg = null;
+
+// 드래그 앤 드롭 이벤트
 function dragStart(e) {
     e.dataTransfer.setData('text/plain', e.target.src);
 }
@@ -23,74 +29,51 @@ function drop(e) {
     const src = e.dataTransfer.getData('text/plain');
     const img = document.createElement('img');
     img.src = src;
-    
-    // 크기를 고정함 (50x50 픽셀로 설정)
     img.style.width = '50px';
     img.style.height = '50px';
-    
-    // 이미지 위치 설정
     img.style.position = 'absolute';
     img.style.left = `${e.clientX - faceArea.offsetLeft - 25}px`; // 중앙 정렬
-    img.style.top = `${e.clientY - faceArea.offsetTop - 25}px`;   // 중앙 정렬
+    img.style.top = `${e.clientY - faceArea.offsetTop - 25}px`;
     img.classList.add('food-on-face');
-    
     faceArea.appendChild(img);
-
-    // 터치 시작 시 이미지 드래그 효과를 구현
-foodItems.forEach(item => {
-    item.addEventListener('touchstart', touchStart);
-});
-
-function touchStart(e) {
-    const touch = e.touches[0];
-    const imgSrc = e.target.src;
-    
-    const img = document.createElement('img');
-    img.src = imgSrc;
-    img.style.width = '50px';
-    img.style.height = '50px';
-    img.style.position = 'absolute';
-    
-    document.body.appendChild(img);
-
-    // 터치 움직임에 따라 이미지 위치 업데이트
-    document.addEventListener('touchmove', function (moveEvent) {
-        img.style.left = `${moveEvent.touches[0].pageX - 25}px`; // 중앙 정렬
-        img.style.top = `${moveEvent.touches[0].pageY - 25}px`;
-    });
-
-    // 터치가 끝났을 때 위치 확정
-    document.addEventListener('touchend', function () {
-        faceArea.appendChild(img);
-    });
-}
-// 기존 드래그 앤 드롭 코드
-
-// 터치 이벤트 관련 코드 추가
-foodItems.forEach(item => {
-    item.addEventListener('touchstart', touchStart);
-});
-
-function touchStart(e) {
-    const touch = e.touches[0];
-    const imgSrc = e.target.src;
-
-    const img = document.createElement('img');
-    img.src = imgSrc;
-    img.style.width = '50px';
-    img.style.height = '50px';
-    img.style.position = 'absolute';
-
-    document.body.appendChild(img);
-
-    document.addEventListener('touchmove', function (moveEvent) {
-        img.style.left = `${moveEvent.touches[0].pageX - 25}px`;
-        img.style.top = `${moveEvent.touches[0].pageY - 25}px`;
-    });
-
-    document.addEventListener('touchend', function () {
-        faceArea.appendChild(img);
-    });
 }
 
+// 터치 이벤트
+function touchStart(e) {
+    const touch = e.touches[0];
+    currentImg = document.createElement('img');
+    currentImg.src = e.target.src;
+    currentImg.style.width = '50px';
+    currentImg.style.height = '50px';
+    currentImg.style.position = 'absolute';
+    document.body.appendChild(currentImg);
+    
+    currentImg.style.left = `${touch.pageX - 25}px`;
+    currentImg.style.top = `${touch.pageY - 25}px`;
+}
+
+function touchMove(e) {
+    if (currentImg) {
+        const touch = e.touches[0];
+        currentImg.style.left = `${touch.pageX - 25}px`;
+        currentImg.style.top = `${touch.pageY - 25}px`;
+    }
+}
+
+function touchEnd(e) {
+    if (currentImg) {
+        const touch = e.changedTouches[0];
+        const faceAreaRect = faceArea.getBoundingClientRect();
+        
+        // 터치 위치가 얼굴 영역 안에 있으면 추가
+        if (touch.pageX >= faceAreaRect.left && touch.pageX <= faceAreaRect.right &&
+            touch.pageY >= faceAreaRect.top && touch.pageY <= faceAreaRect.bottom) {
+            currentImg.style.left = `${touch.pageX - faceAreaRect.left - 25}px`;
+            currentImg.style.top = `${touch.pageY - faceAreaRect.top - 25}px`;
+            faceArea.appendChild(currentImg);
+        } else {
+            currentImg.remove();
+        }
+        currentImg = null;
+    }
 }
